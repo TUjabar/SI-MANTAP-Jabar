@@ -12,21 +12,21 @@
 
     <style>
         /* === DESAIN ESTETIK & ELEGAN DESAIN PEMERINTAHAN (SI-MANTAP) === */
-       :root {
-    --bg-main: #f8fafc;
-    --sidebar-bg: #068074;
-    --sidebar-accent: #1f1b9b;
-    --emerald-primary: #6366f1;
-    --emerald-light: #818cf8;
-    --emerald-soft: #eef2ff;
-    --emerald-glow: rgba(22, 109, 83, 0.2);
-    --text-heading: #3830ad;
-    --text-body: #374151;
-    --text-muted: #6b7280;
-    --border-color: #e0e7ff;
-    --card-shadow: 0 4px 20px -2px rgba(30, 27, 75, 0.05);
-    --hover-shadow: 0 12px 28px -4px rgba(99, 102, 241, 0.2);
-}
+        :root {
+            --bg-main: #f8fafc;
+            --sidebar-bg: #068074;
+            --sidebar-accent: #1f1b9b;
+            --emerald-primary: #6366f1;
+            --emerald-light: #818cf8;
+            --emerald-soft: #eef2ff;
+            --emerald-glow: rgba(22, 109, 83, 0.2);
+            --text-heading: #3830ad;
+            --text-body: #374151;
+            --text-muted: #6b7280;
+            --border-color: #e0e7ff;
+            --card-shadow: 0 4px 20px -2px rgba(30, 27, 75, 0.05);
+            --hover-shadow: 0 12px 28px -4px rgba(99, 102, 241, 0.2);
+        }
 
         * {
             box-sizing: border-box;
@@ -40,9 +40,10 @@
             display: flex;
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
         }
 
-        /* SIDEBAR ELEGAN */
+        /* SIDEBAR ELEGAN & MODE MINI */
         .sidebar {
             width: 270px;
             background-color: var(--sidebar-bg) !important;
@@ -54,6 +55,47 @@
             flex-shrink: 0;
             box-shadow: 4px 0 24px rgba(0, 0, 0, 0.06);
             z-index: 20;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s ease;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        /* CLASS KETIKA SIDEBAR SEMBUNYI JADI MINI */
+        body.sidebar-collapsed .sidebar {
+            width: 78px;
+            padding: 24px 12px;
+        }
+
+        /* ELEMEN YANG DIHIDEN SAAT SIDEBAR MINI */
+        body.sidebar-collapsed .logo-text,
+        body.sidebar-collapsed .menu-title,
+        body.sidebar-collapsed .menu-item span:nth-child(2),
+        body.sidebar-collapsed .dropdown-arrow,
+        body.sidebar-collapsed .sub-menu,
+        body.sidebar-collapsed .system-status div {
+            display: none !important;
+        }
+
+        /* IMPLIKASI TAMPILAN IKON SAAT SIDEBAR MINI */
+        body.sidebar-collapsed .logo {
+            justify-content: center;
+            padding-bottom: 16px;
+            margin-bottom: 16px;
+        }
+
+        body.sidebar-collapsed .menu-item {
+            justify-content: center;
+            padding: 12px 0;
+        }
+
+        body.sidebar-collapsed .icon {
+            margin-right: 0 !important;
+            font-size: 20px;
+        }
+
+        body.sidebar-collapsed .system-status {
+            justify-content: center;
+            padding: 10px 0;
         }
 
         .logo {
@@ -63,6 +105,14 @@
             padding-bottom: 22px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
             margin-bottom: 22px;
+            cursor: pointer;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            user-select: none;
+        }
+
+        .logo:hover {
+            opacity: 0.9;
+            transform: scale(0.98);
         }
 
         .logo-icon {
@@ -74,6 +124,7 @@
             font-size: 13px;
             letter-spacing: 1px;
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            flex-shrink: 0;
         }
 
         .logo-text {
@@ -135,6 +186,7 @@
             color: inherit !important;
             margin-right: 12px;
             font-size: 16px;
+            flex-shrink: 0;
         }
 
         /* OUTLINE & DROPDOWN MENU KEPEGAWAIAN */
@@ -212,25 +264,34 @@
             background-color: #14e464;
             border-radius: 50%;
             box-shadow: 0 0 10px #14e464;
+            flex-shrink: 0;
         }
 
-        /* MAIN CONTENT & TOPBAR */
+        /* MAIN CONTENT - LUAS & MELEBAR MAKSIMAL */
         .main-content {
             flex: 1;
-            padding: 32px 40px;
+            padding: 20px 24px;
             overflow-y: auto;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width: calc(100vw - 270px);
+        }
+
+        body.sidebar-collapsed .main-content {
+            width: calc(100vw - 78px);
+            padding: 20px 32px;
         }
 
         .topbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 28px;
+            margin-bottom: 20px;
             background: #ffffff;
-            padding: 18px 28px;
-            border-radius: 16px;
+            padding: 14px 24px;
+            border-radius: 14px;
             box-shadow: var(--card-shadow);
             border: 1px solid var(--border-color);
+            width: 100%;
         }
 
         .breadcrumb {
@@ -441,100 +502,102 @@
         /* VIEW DISPLAY */
         .content-view {
             display: none;
+            width: 100%;
         }
 
         .content-view.active {
             display: block !important;
         }
 
-        /* CSS OPSI 1 */
-.welcome-card {
-    background: linear-gradient(135deg, #026799 0%, #0d9488 50%, #059669 100%);
-    color: #ffffff;
-    padding: 32px 36px;
-    border-radius: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 28px;
-    box-shadow: 0 12px 28px -4px rgba(2, 132, 199, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    position: relative;
-    overflow: hidden;
-}
+        .welcome-card {
+            background: linear-gradient(135deg, #026799 0%, #0d9488 50%, #059669 100%);
+            color: #ffffff;
+            padding: 24px 28px;
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            box-shadow: 0 12px 28px -4px rgba(2, 132, 199, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+        }
 
-.welcome-card::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -10%;
-    width: 300px;
-    height: 300px;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 70%);
-    pointer-events: none;
-}
+        .welcome-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 70%);
+            pointer-events: none;
+        }
 
-.welcome-label {
-    font-size: 11px;
-    letter-spacing: 1.2px;
-    color: #bae6fd;
-    font-weight: 800;
-    text-transform: uppercase;
-}
+        .welcome-label {
+            font-size: 11px;
+            letter-spacing: 1.2px;
+            color: #bae6fd;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
 
-.welcome-card h2 {
-    margin: 8px 0;
-    font-size: 26px;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-    color: #ffffff;
-}
+        .welcome-card h2 {
+            margin: 8px 0;
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+        }
 
-.welcome-card p {
-    margin: 0;
-    color: #f0f9ff;
-    max-width: 560px;
-    font-size: 14px;
-    line-height: 1.6;
-}
+        .welcome-card p {
+            margin: 0;
+            color: #f0f9ff;
+            max-width: 600px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
 
-.welcome-date {
-    text-align: right;
-    background: rgba(255, 255, 255, 0.15);
-    padding: 18px 24px;
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(10px);
-}
+        .welcome-date {
+            text-align: right;
+            background: rgba(246, 248, 247, 0.15);
+            padding: 16px 22px;
+            border-radius: 14px;
+            border: 1px solid rgba(247, 246, 246, 0.3);
+            backdrop-filter: blur(10px);
+        }
 
-.welcome-date strong {
-    display: block;
-    font-size: 15px;
-    margin-top: 2px;
-    color: #ffffff;
-    font-weight: 700;
-}
+        .welcome-date strong {
+            display: block;
+            font-size: 15px;
+            margin-top: 2px;
+            color: #ffffff;
+            font-weight: 700;
+        }
 
-.live-clock {
-    font-size: 18px;
-    font-weight: 800;
-    color: #fef08a;
-    margin-top: 6px;
-    letter-spacing: 1px;
-}
+        .live-clock {
+            font-size: 18px;
+            font-weight: 800;
+            color: #fef08a;
+            margin-top: 4px;
+            letter-spacing: 1px;
+        }
 
-        /* STAT CARDS DENGAN GREEN HOVER EFFECT ELEGAN */
+        /* STAT CARDS - MENYESUAIKAN LEBAR */
         .cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 22px;
-            margin-top: 18px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 14px;
+            width: 100%;
         }
 
         .stat-card {
             background: #ffffff;
-            padding: 24px;
-            border-radius: 18px;
+            padding: 22px;
+            border-radius: 16px;
             box-shadow: var(--card-shadow);
             border: 1px solid var(--border-color);
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -543,13 +606,13 @@
         }
 
         .stat-card:hover {
-            transform: translateY(-6px);
+            transform: translateY(-4px);
             border-color: var(--emerald-light);
             box-shadow: var(--hover-shadow);
         }
 
         .stat-card:hover .card-icon {
-            transform: scale(1.1);
+            transform: scale(1.08);
         }
 
         .card-top {
@@ -559,8 +622,8 @@
         }
 
         .card-icon {
-            width: 46px;
-            height: 46px;
+            width: 44px;
+            height: 44px;
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -577,7 +640,7 @@
             font-size: 13px;
             color: var(--text-muted);
             font-weight: 600;
-            margin: 16px 0 4px 0;
+            margin: 14px 0 4px 0;
         }
 
         .stat-card h3 {
@@ -591,7 +654,7 @@
         .card-footer {
             font-size: 12px;
             color: var(--text-muted);
-            margin-top: 10px;
+            margin-top: 8px;
             display: flex;
             gap: 6px;
             align-items: center;
@@ -599,13 +662,14 @@
 
         .positive { color: var(--emerald-primary); font-weight: 700; }
 
-        /* PANEL & TABLES ELEGAN */
+        /* PANEL & TABLES */
         .panel {
             background: #ffffff;
-            padding: 28px;
-            border-radius: 20px;
+            padding: 24px;
+            border-radius: 16px;
             box-shadow: var(--card-shadow);
             border: 1px solid var(--border-color);
+            width: 100%;
         }
 
         .panel-header h2 {
@@ -617,16 +681,17 @@
         }
 
         .panel-header p {
-            margin: 4px 0 20px 0;
+            margin: 4px 0 16px 0;
             font-size: 13px;
             color: var(--text-muted);
         }
 
         .table-wrapper {
             overflow-x: auto;
-            margin-top: 18px;
+            margin-top: 14px;
             border-radius: 12px;
             border: 1px solid var(--border-color);
+            width: 100%;
         }
 
         table {
@@ -648,14 +713,10 @@
         }
 
         table td {
-            padding: 16px 18px;
+            padding: 14px 18px;
             border-bottom: 1px solid #f1f5f9;
             color: var(--text-body);
             transition: background-color 0.2s ease;
-        }
-
-        table tbody tr {
-            transition: all 0.2s ease;
         }
 
         table tbody tr:hover {
@@ -712,9 +773,9 @@
 
         /* CONTAINERS & VIEWERS */
         .spreadsheet-container, .pdf-viewer-container {
-            margin-top: 18px;
+            margin-top: 16px;
             width: 100%;
-            height: 620px;
+            height: 680px;
             border-radius: 12px;
             overflow: hidden;
             border: 1px solid var(--border-color);
@@ -728,21 +789,23 @@
         }
 
         .file-viewer-panel {
-            margin-top: 28px;
+            margin-top: 24px;
             background: #fff;
-            border-radius: 20px;
-            padding: 24px;
+            border-radius: 16px;
+            padding: 22px;
             border: 1px solid var(--border-color);
             box-shadow: var(--card-shadow);
+            width: 100%;
         }
 
         .placeholder-view {
             background: #ffffff;
             padding: 80px 20px;
-            border-radius: 20px;
+            border-radius: 16px;
             text-align: center;
             border: 2px dashed #cbd5e1;
-            margin-top: 20px;
+            margin-top: 16px;
+            width: 100%;
         }
 
         /* MODAL OVERLAY ELEGAN */
@@ -830,12 +893,12 @@
         }
 
         footer {
-            margin-top: 40px;
+            margin-top: 32px;
             display: flex;
             justify-content: space-between;
             color: var(--text-muted);
             font-size: 12px;
-            padding-top: 20px;
+            padding-top: 16px;
             border-top: 1px solid var(--border-color);
             font-weight: 500;
         }
@@ -846,7 +909,8 @@
     <!-- SIDEBAR -->
     <aside class="sidebar">
         <div>
-            <div class="logo">
+            <!-- LOGO BMKG ONCLICK MINI SIDEBAR -->
+            <div class="logo" onclick="toggleSidebar()" title="Klik untuk perkecil / perbesar Sidebar">
                 <div class="logo-icon">BMKG</div>
                 <div class="logo-text">
                     <strong>SI-MANTAP</strong>
@@ -857,16 +921,15 @@
             <nav class="menu">
                 <p class="menu-title">MENU UTAMA</p>
 
-                <a class="menu-item active" id="nav-dashboard" onclick="switchTab('dashboard')">
+                <a class="menu-item active" id="nav-dashboard" onclick="switchTab('dashboard')" title="Dashboard">
                     <div>
                         <span class="icon">⌂</span>
                         <span>Dashboard</span>
                     </div>
                 </a>
 
-                <!-- MENU KEPEGAWAIAN DENGAN DROPDOWN SUBMENU OUTLINE -->
                 <div class="menu-group" id="group-kepegawaian">
-                    <a class="menu-item" id="nav-kepegawaian" onclick="toggleKepegawaianMenu()">
+                    <a class="menu-item" id="nav-kepegawaian" onclick="toggleKepegawaianMenu()" title="Kepegawaian">
                         <div>
                             <span class="icon">👥</span>
                             <span>Kepegawaian</span>
@@ -880,21 +943,21 @@
                     </div>
                 </div>
 
-                <a class="menu-item" id="nav-persuratan" onclick="switchTab('persuratan')">
+                <a class="menu-item" id="nav-persuratan" onclick="switchTab('persuratan')" title="Persuratan">
                     <div>
                         <span class="icon">✉</span>
                         <span>Persuratan</span>
                     </div>
                 </a>
 
-                <a class="menu-item" id="nav-kearsipan" onclick="switchTab('kearsipan')">
+                <a class="menu-item" id="nav-kearsipan" onclick="switchTab('kearsipan')" title="Kearsipan">
                     <div>
                         <span class="icon">▣</span>
                         <span>Kearsipan</span>
                     </div>
                 </a>
 
-                <a class="menu-item" id="nav-agenda" onclick="switchTab('agenda')">
+                <a class="menu-item" id="nav-agenda" onclick="switchTab('agenda')" title="Agenda">
                     <div>
                         <span class="icon">▦</span>
                         <span>Agenda</span>
@@ -903,14 +966,14 @@
 
                 <p class="menu-title">LAPORAN</p>
 
-                <a class="menu-item" id="nav-rekapitulasi" onclick="switchTab('rekapitulasi')">
+                <a class="menu-item" id="nav-rekapitulasi" onclick="switchTab('rekapitulasi')" title="Rekapitulasi">
                     <div>
                         <span class="icon">▤</span>
                         <span>Rekapitulasi</span>
                     </div>
                 </a>
 
-                <a class="menu-item" id="nav-export" onclick="switchTab('export')">
+                <a class="menu-item" id="nav-export" onclick="switchTab('export')" title="Export Data">
                     <div>
                         <span class="icon">↓</span>
                         <span>Export Data</span>
@@ -930,10 +993,10 @@
         </div>
     </aside>
 
-    <!-- KONTEN UTAMA -->
+    <!-- KONTEN UTAMA MELEBAR OTO-FIT -->
     <main class="main-content">
 
-        <!-- TOPBAR -->
+        <!-- TOPBAR TANPA TOMBOL HAMBURGER -->
         <header class="topbar">
             <div>
                 <p class="breadcrumb" id="breadcrumb-text">Sistem Informasi Manajemen Tata / Dashboard</p>
@@ -948,7 +1011,6 @@
                         <span class="badge-count" id="notif-badge">3</span>
                     </button>
 
-                    <!-- DROPDOWN NOTIFIKASI -->
                     <div class="notification-dropdown" id="notif-dropdown">
                         <div class="notif-header">
                             <span>Notifikasi Sistem</span>
@@ -1002,14 +1064,14 @@
                 </div>
 
                 <div class="welcome-date">
-                    <span id="current-day" style="color: #94a3b8; font-size: 12px; font-weight: 700; text-transform: uppercase;">-</span>
+                    <span id="current-day" style="color: #f4f5f7; font-size: 15px; font-weight: 700; text-transform: uppercase;">-</span>
                     <strong id="current-date">-</strong>
                     <div id="current-clock" class="live-clock">00:00:00 WIB</div>
                 </div>
             </section>
 
             <section class="section">
-                <div class="section-header" style="margin-bottom: 14px;">
+                <div class="section-header" style="margin-bottom: 12px;">
                     <h2 style="margin:0; font-size: 18px; color: var(--text-heading); font-weight: 800;">Ringkasan Data</h2>
                     <p style="margin:3px 0 0 0; font-size:13px; color: var(--text-muted);">Informasi administrasi terkini</p>
                 </div>
@@ -1235,7 +1297,10 @@
 
         const SPREADSHEET_READONLY_URL = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQ7dRv5Pg-gPed3Ma-UgoeLFkJ6Z1EA-Uv4DkohbExU-mi18GINQxjWu3L30F34Vw/pubhtml`;
 
-        // TANGGAL OTOMATIS & JAM AKTIF
+        function toggleSidebar() {
+            document.body.classList.toggle('sidebar-collapsed');
+        }
+
         function updateLiveClock() {
             const now = new Date();
             const hariList = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
@@ -1258,7 +1323,6 @@
         setInterval(updateLiveClock, 1000);
         updateLiveClock();
 
-        // LOGIKA INTERAKTIF NOTIFIKASI
         function toggleNotificationMenu(event) {
             event.stopPropagation();
             const dropdown = document.getElementById('notif-dropdown');
@@ -1291,24 +1355,21 @@
             }
         }
 
-        // LOGIKA MENU KEPEGAWAIAN (DROPDOWN OUTLINE BERKAS)
         function toggleKepegawaianMenu() {
+            if (document.body.classList.contains('sidebar-collapsed')) {
+                document.body.classList.remove('sidebar-collapsed');
+            }
             const groupKep = document.getElementById('group-kepegawaian');
             groupKep.classList.toggle('open');
         }
 
         function showBerkasPegawai(event) {
-            if(event) event.stopPropagation(); // Mencegah bubbling event ke parent
-            
-            // Aktifkan Tampilan Halaman Kepegawaian (Tabel Nama-nama Pegawai)
+            if(event) event.stopPropagation();
             switchTab('kepegawaian');
-
-            // Set penanda aktif khusus pada submenu berkas
             const subMenuBtn = document.getElementById('subnav-berkas');
             if (subMenuBtn) subMenuBtn.classList.add('active');
         }
 
-        // NAVIGASI SWITCH TAB HALAMAN
         function switchTab(tab) {
             const views = document.querySelectorAll('.content-view');
             views.forEach(v => v.classList.remove('active'));
@@ -1371,10 +1432,8 @@
             }
         }
 
-        // HANDLER MODAL KEPEGAWAIAN
         function openModalBerkas(namaPegawai, emailPegawai, driveUrl) {
             selectedPegawaiName = namaPegawai;
-
             selectedPegawaiEmail = emailPegawai;
             selectedPegawaiDrive = driveUrl || 'https://drive.google.com';
 
@@ -1447,7 +1506,6 @@
             document.getElementById('file-viewer-container').style.display = 'none';
         }
 
-        // EVENT LISTENER GLOBAL
         window.onclick = function(event) {
             const modalBerkas = document.getElementById('modal-berkas');
             const notifDropdown = document.getElementById('notif-dropdown');
