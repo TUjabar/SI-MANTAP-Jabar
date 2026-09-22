@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ketatausahaan | Stasiun Klimatologi Jawa Barat</title>
+
+    <link rel="stylesheet" href="./static/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* LOGO TEKS PUTIH */
+        .logo-text strong,
+        .logo-text span {
+            color: #ffffff !important;
+        }
+        
+        /* BACKGROUND SIDEBAR MENU */
+        .sidebar {
+            background-color: rgb(47, 141, 85) !important;
+            color: #ffffff;
+        }
+
+        .sidebar .menu-title {
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+        .sidebar .menu-item {
+            color: #ffffff !important;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .sidebar .menu-item:hover, 
+        .sidebar .menu-item.active {
+            background-color: rgba(0, 0, 0, 0.2) !important;
+        }
+
+        /* ICON BERWARNA PUTIH */
+        .sidebar .icon {
+            color: #ffffff !important;
+            fill: #ffffff !important;
+            filter: drop-shadow(0px 0px 1px rgba(255, 255, 255, 0.5));
+        }
+
+        /* OUTLINE MENU KEPEGAWAIAN */
+        .sub-menu {
+            display: none;
+            padding-left: 15px;
+            margin-top: 5px;
+        }
+        .menu-group.active .sub-menu {
+            display: block;
+        }
+        .sub-menu-item {
+            display: block;
+            padding: 8px 12px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 13px;
+            border-radius: 6px;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .menu-group.active .sub-menu-item {
+            border: 2px solid #ffffff;
+            background-color: rgba(255, 255, 255, 0.2);
+            font-weight: 600;
+        }
+
+        /* VIEW DISPLAY */
+        .content-view {
+            display: none;
+        }
+        .content-view.active {
+            display: block !important;
+        }
+
+        .placeholder-view {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px dashed #cbd5e1;
+            margin-top: 20px;
+        }
+
+        /* CONTAINER SPREADSHEET READ-ONLY */
+        .spreadsheet-container {
+            margin-top: 16px;
+            width: 100%;
+            height: 650px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #cbd5e1;
+            background-color: #f8fafc;
+            position: relative;
+        }
+        .spreadsheet-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* BUTTON EDIT ADMIN & SPREADSHEET */
+        .drive-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 6px;
+            background: #1a73e8;
+            color: #fff;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: background 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+        .drive-button:hover {
+            background: #1557b0;
+        }
+        .drive-button.admin-btn {
+            background: #d97706;
+        }
+        .drive-button.admin-btn:hover {
+            background: #b45309;
+        }
+
+        /* STYLING MODAL OVERLAY */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        .modal-overlay.active {
+            display: flex !important;
+        }
+        .modal-box {
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        .modal-close {
+            position: absolute;
+            top: 12px;
+            right: 18px;
+            font-size: 24px;
+            text-decoration: none;
+            color: #666;
+            cursor: pointer;
+        }
+        .btn-small {
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 4px;
+            border: 1px solid #0056b3;
+            background: #e6f0fa;
+            color: #0056b3;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-small:hover {
+            background: #0056b3;
+            color: #fff;
+        }
+
+        .file-viewer-panel {
+            margin-top: 24px;
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .pdf-viewer-container {
+            margin-top: 16px;
+            width: 100%;
+            height: 600px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #cbd5e1;
+            background-color: #f8fafc;
+        }
+
+        .pdf-viewer-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* REAL-TIME CLOCK */
+        .welcome-date {
+            text-align: right;
+        }
+        .live-clock {
+            font-size: 18px;
+            font-weight: bold;
+            color: #021f5d;
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-readonly {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background-color: #e2e8f0;
+            color: #334155;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">BMKG</div>
+            <div class="logo-text">
+                <strong>SI-MANTAP</strong>
+                <span>Jawa Barat</span>
+            </div>
+        </div>
+
+        <nav class="menu">
+            <p class="menu-title">MENU UTAMA</p>
+
+            <a class="menu-item active" id="nav-dashboard" onclick="switchTab('dashboard')">
+                <span class="icon">⌂</span>
+                <span>Dashboard</span>
+            </a>
+
+            <div class="menu-group" id="group-kepegawaian">
+                <a class="menu-item" id="nav-kepegawaian" onclick="switchTab('kepegawaian')">
+                    <span class="icon">👥</span>
+                    <span>Kepegawaian</span>
+                </a>
+                <div class="sub-menu">
+                    <a class="sub-menu-item" onclick="switchTab('kepegawaian')">
+                        <span>📄 Berkas Pegawai</span>
+                    </a>
+                </div>
+            </div>
+
+            <a class="menu-item" id="nav-persuratan" onclick="switchTab('persuratan')">
+                <span class="icon">✉</span>
+                <span>Persuratan</span>
+            </a>
+
+            <a class="menu-item" id="nav-kearsipan" onclick="switchTab('kearsipan')">
+                <span class="icon">▣</span>
+                <span>Kearsipan</span>
+            </a>
+
+            <a class="menu-item" id="nav-agenda" onclick="switchTab('agenda')">
+                <span class="icon">▦</span>
+                <span>Agenda</span>
+            </a>
+
+            <p class="menu-title">LAPORAN</p>
+
+            <a class="menu-item" id="nav-rekapitulasi" onclick="switchTab('rekapitulasi')">
+                <span class="icon">▤</span>
+                <span>Rekapitulasi</span>
+            </a>
+
+            <a class="menu-item" id="nav-export" onclick="switchTab('export')">
+                <span class="icon">↓</span>
+                <span>Export Data</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="system-status">
+                <span class="status-dot"></span>
+                <div>
+                    <strong>System Online</strong>
+                    <small>Ketatausahaan</small>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- KONTEN UTAMA -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <div>
+                <p class="breadcrumb" id="breadcrumb-text">Sistem Informasi / Dashboard</p>
+                <h1 id="page-title">Dashboard Ketatausahaan</h1>
+            </div>
+
+            <div class="user-profile">
+                <div class="notification">
+                    🔔
+                    <span class="badge-count">3</span>
+                </div>
+                <div class="avatar">TU</div>
+                <div class="user-info">
+                    <strong>Administrator</strong>
+                    <small>Ketatausahaan</small>
+                </div>
+            </div>
+        </header>
+
+        <!-- VIEW 1: DASHBOARD CONTENT -->
+        <div id="view-dashboard" class="content-view active">
+            <section class="welcome-card">
+                <div>
+                    <span class="welcome-label">SISTEM INFORMASI KETATAUSAHAAN</span>
+                    <h2>Selamat Datang 👋</h2>
+                    <p>
+                        Kelola administrasi, kepegawaian, persuratan, dan kearsipan Stasiun Klimatologi Jawa Barat secara lebih efektif dan terintegrasi.
+                    </p>
+                </div>
+
+                <div class="welcome-date">
+                    <span id="current-day">-</span>
+                    <strong id="current-date">-</strong>
+                    <div id="current-clock" class="live-clock">00:00:00 WIB</div>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="section-header">
+                    <h2>Ringkasan Data</h2>
+                    <p>Informasi administrasi terkini</p>
+                </div>
+
+                <div class="cards">
+                    <div class="stat-card">
+                        <div class="card-top">
+                            <div class="card-icon blue">👥</div>
+                            <span class="card-more">•••</span>
+                        </div>
+                        <p class="card-label">Total Pegawai</p>
+                        <h3>35</h3>
+                        <div class="card-footer">
+                            <span class="positive">↑ 2</span>
+                            <span>bulan ini</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="card-top">
+                            <div class="card-icon green">✉</div>
+                            <span class="card-more">•••</span>
+                        </div>
+                        <p class="card-label">Surat Masuk</p>
+                        <h3>128</h3>
+                        <div class="card-footer">
+                            <span class="positive">↑ 12%</span>
+                            <span>bulan ini</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="card-top">
+                            <div class="card-icon orange">↗</div>
+                            <span class="card-more">•••</span>
+                        </div>
+                        <p class="card-label">Surat Keluar</p>
+                        <h3>95</h3>
+                        <div class="card-footer">
+                            <span class="positive">↑ 8%</span>
+                            <span>bulan ini</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="card-top">
+                            <div class="card-icon purple">▣</div>
+                            <span class="card-more">•••</span>
+                        </div>
+                        <p class="card-label">Total Arsip</p>
+                        <h3>450</h3>
+                        <div class="card-footer">
+                            <span class="positive">↑ 24</span>
+                            <span>bulan ini</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- VIEW 2: KEPEGAWAIAN CONTENT -->
+        <div id="view-kepegawaian" class="content-view">
+            <section class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h2>Daftar Pegawai & Dokumen</h2>
+                        <p>Manajemen data seluruh ASN Stasiun Klimatologi Jabar</p>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>NIP</th>
+                                <th>Nama Pegawai</th>
+                                <th>Jabatan</th>
+                                <th>Golongan</th>
+                                <th>Akses Berkas</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>198009142002121003</td>
+                                <td><strong>Rakhmat Prasetia, SP., M.Si</strong></td>
+                                <td>Kepala Sta. Klimatologi Jawa Barat</td>
+                                <td>IV/b</td>
+                                <td>
+                                    <button type="button" class="btn-small" onclick="openModalBerkas('Rakhmat Prasetia, SP., M.Si', 'rakhmat.prasetia@bmkg.go.id', 'https://drive.google.com/drive/folders/1QLMPWI7mL1LocMGEDvh3AEEVomr9sXUC?usp=drive_link')">📁 Drive Berkas</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>197708041999031001</td>
+                                <td><strong>Dadang Misbahudin, S.Kom., M.M</strong></td>
+                                <td>Kepala Tata Usaha</td>
+                                <td>IV/a</td>
+                                <td>
+                                    <button type="button" class="btn-small" onclick="openModalBerkas('Dadang Misbahudin, S.Kom., M.M', 'dadang.misbahudin@bmkg.go.id', 'https://drive.google.com/drive/folders/1aDiN7zFGJ4jaPb5i-n7O_VyObGqkVP7S?usp=drive_link')">📁 Drive Berkas</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>197508082008121001</td>
+                                <td><strong>Adi Prasetyo, SE</strong></td>
+                                <td>Penelaah Teknis Kebijakan</td>
+                                <td>III/d</td>
+                                <td>
+                                    <button type="button" class="btn-small" onclick="openModalBerkas('Adi Prasetyo, SE', 'adi.prasetyo@bmkg.go.id', 'https://drive.google.com/drive/folders/1DqFMNT_edRnS7_lL5rPwAwLnDS7yejbl?usp=drive_link')">📁 Drive Berkas</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>199503252014111001</td>
+                                <td><strong>Aditya Kusuma Al Arif, S.Tr</strong></td>
+                                <td>PMG Pertama</td>
+                                <td>III/a</td>
+                                <td>
+                                    <button type="button" class="btn-small" onclick="openModalBerkas('Aditya Kusuma Al Arif, S.Tr', 'aditya.arif@bmkg.go.id', 'https://drive.google.com/drive/folders/1mDMp9oAGg2_B8_BeUcLj6eHkv9a56UO2?usp=sharing')">📁 Drive Berkas</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>199311232013122001</td>
+                                <td><strong>Alita Nuraeni, S.Tr</strong></td>
+                                <td>PMG Muda</td>
+                                <td>III/c</td>
+                                <td>
+                                    <button type="button" class="btn-small" onclick="openModalBerkas('Alita Nuraeni, S.Tr', 'alita.nuraeni@bmkg.go.id', 'https://drive.google.com/drive/folders/1QXgXB5uD0rsyDSF2Cxf0Ce0yGHcVpNia?usp=sharing')">📁 Drive Berkas</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>199401312014112001</td>
+                                <td><strong>Jenni Maria Renata, S.Tr</strong></td>
+                                <td>Perencana Pertama</td>
+                                <td>III/b</td>
+                                <td>
+                                    <button type="button" class="btn-small" onclick="openModalBerkas('Jenni Maria Renata, S.Tr', 'jenni.renata@bmkg.go.id', 'https://drive.google.com/drive/folders/1887wodio_uCiB_V9mETQGOONUaMPHp__?usp=sharing')">📁 Drive Berkas</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>199510082014111001</td>
+                                <td><strong>Perdana Reynaldy Augus Usior, S.Tr</strong></td>
+                                <td>PMG Muda</td>
+                                <td>III/c</td>
+                                <td>
+                                    <button type="button" class="btn-small" onclick="openModalBerkas('Perdana Reynaldy Augus Usior, S.Tr', 'perdana.usior@bmkg.go.id', 'https://drive.google.com/drive/folders/1kFHj7sknmsCX9Z87zMIUuXga7hSqV_HE?usp=sharing')">📁 Drive Berkas</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- TAMPILAN VIEW BERKAS FOLDER / FILE PDF -->
+            <div id="file-viewer-container" class="file-viewer-panel" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px;">
+                    <div>
+                        <h3 id="target-pegawai-name" style="margin: 0; color: #0056b3;">📁 Berkas Arsip: -</h3>
+                        <small id="verified-email-tag" style="color: #16a34a; font-weight: 500;">✔ Email terverifikasi: -</small>
+                    </div>
+                    <button type="button" onclick="closeFileViewer()" style="background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: 600;">Tutup Berkas</button>
+                </div>
+
+                <div style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #dbeafe;">
+                    <span style="color: #334155; font-weight: 500; font-size: 14px;">Pratinjau Dokumen PDF & Folder Drive Resmi Pegawai</span>
+                    <a id="pegawai-drive-url" href="#" class="drive-button" target="_blank" rel="noopener noreferrer">
+                        📂 Buka Tab Google Drive
+                    </a>
+                </div>
+
+                <div class="pdf-viewer-container">
+                    <iframe id="drive-embed-frame" src="" allow="autoplay"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 3: PERSURATAN CONTENT (MODE READ-ONLY UNTUK PEGAWAI) -->
+        <div id="view-persuratan" class="content-view">
+            <section class="panel">
+                <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <h2>Register Surat Masuk & Keluar <span class="badge-readonly">🔒 Mode Lihat Saja</span></h2>
+                        <p>Lembar kerja digital persuratan Stasiun Klimatologi Jawa Barat</p>
+                    </div>
+                    <div>
+                </div>
+
+                <!-- EMBEDDED GOOGLE SPREADSHEET (MODE HTML PREVIEW / READ ONLY) -->
+                <div class="spreadsheet-container">
+                    <iframe id="persuratan-iframe" src="about:blank"></iframe>
+                </div>
+            </section>
+        </div>
+
+        <!-- VIEW GENERIK -->
+        <div id="view-generic" class="content-view">
+            <div class="placeholder-view">
+                <h2 id="generic-title">Modul Fitur</h2>
+                <p id="generic-desc">Halaman modul ini siap dihubungkan dengan database sistem informasi.</p>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer>
+            <p>© 2026 Stasiun Klimatologi Jawa Barat</p>
+            <span>Sistem Informasi Ketatausahaan</span>
+        </footer>
+
+    </main>
+
+    <!-- MODAL POPUP VERIFIKASI EMAIL PEGAWAI -->
+    <div id="modal-berkas" class="modal-overlay">
+        <div class="modal-box">
+            <span class="modal-close" onclick="closeModalBerkas()">&times;</span>
+            <div class="modal-header">
+                <span class="modal-icon" style="font-size:32px;">🔐</span>
+                <h2 style="margin: 5px 0;">Verifikasi Akses Berkas</h2>
+                <p id="modal-desc" style="font-size: 13px; color: #666; margin-bottom: 15px;">Silakan tuliskan email resmi BMKG Anda untuk melanjutkan.</p>
+            </div>
+            <form action="#" class="modal-form" onsubmit="handleLoginBerkas(event)">
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label for="email-bmkg" style="display:block; font-size:12px; margin-bottom:4px; font-weight:600;">Masukkan Email BMKG Anda</label>
+                    <input 
+                        type="email" 
+                        id="email-bmkg" 
+                        placeholder="contoh: nama.anda@bmkg.go.id" 
+                        pattern="^[a-zA-Z0-9._%+-]+@bmkg\.go\.id$" 
+                        title="Harus menggunakan email resmi berdomain @bmkg.go.id" 
+                        style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; box-sizing: border-box;"
+                        required
+                    >
+                </div>
+                <button type="submit" class="btn-submit" style="width:100%; padding:10px; background:#0056b3; color:#fff; border:none; border-radius:6px; cursor:pointer; font-weight:600;">Verifikasi & Akses Berkas</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL POPUP AKSES EDIT ADMIN PERSURATAN -->
+    <div id="modal-admin-persuratan" class="modal-overlay">
+        <div class="modal-box">
+            <span class="modal-close" onclick="closeAdminModal()">&times;</span>
+            <div class="modal-header">
+                <span class="modal-icon" style="font-size:32px;">🛡️</span>
+                <h2 style="margin: 5px 0;">Akses Pengeditan Admin</h2>
+                <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Masukkan Kata Sandi / PIN Admin Ketatausahaan untuk membuka sheet pengeditan.</p>
+            </div>
+            <form action="#" class="modal-form" onsubmit="handleAdminLogin(event)">
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label for="password-admin" style="display:block; font-size:12px; margin-bottom:4px; font-weight:600;">Kata Sandi Admin</label>
+                    <input 
+                        type="password" 
+                        id="password-admin" 
+                        placeholder="Masukkan Kata Sandi" 
+                        style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; box-sizing: border-box;"
+                        required
+                    >
+                </div>
+                <button type="submit" class="btn-submit" style="width:100%; padding:10px; background:#d97706; color:#fff; border:none; border-radius:6px; cursor:pointer; font-weight:600;">Buka Google Sheets (Mode Edit)</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        let selectedPegawaiName = "";
+        let selectedPegawaiEmail = "";
+        let selectedPegawaiDrive = "";
+
+        // SPREADSHEET URLS
+        // Ganti ID "YOUR_SPREADSHEET_ID" di bawah dengan ID Google Sheet Anda
+        const SPREADSHEET_ID = "1T9Di5Ukrr3O03cNNhM-vAW8LDxjwE4Q3"; 
+        
+        // Mode Read-Only (Hanya Lihat bagi Pegawai) menggunakan format /htmlview atau /pubhtml
+        const SPREADSHEET_READONLY_URL = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQ7dRv5Pg-gPed3Ma-UgoeLFkJ6Z1EA-Uv4DkohbExU-mi18GINQxjWu3L30F34Vw/pubhtml`;
+
+
+        // TANGGAL OTOMATIS & JAM AKTIF
+        function updateLiveClock() {
+            const now = new Date();
+            const hariList = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const bulanList = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+            const namaHari = hariList[now.getDay()];
+            const tanggal = now.getDate();
+            const namaBulan = bulanList[now.getMonth()];
+            const tahun = now.getFullYear();
+
+            const jam = String(now.getHours()).padStart(2, '0');
+            const menit = String(now.getMinutes()).padStart(2, '0');
+            const detik = String(now.getSeconds()).padStart(2, '0');
+
+            document.getElementById('current-day').innerText = namaHari;
+            document.getElementById('current-date').innerText = `${tanggal} ${namaBulan} ${tahun}`;
+            document.getElementById('current-clock').innerText = `${jam}:${menit}:${detik} WIB`;
+        }
+
+        setInterval(updateLiveClock, 1000);
+        updateLiveClock();
+
+        // NAVIGASI MENU SIDEBAR (ONCLICK)
+        function switchTab(tab) {
+            const views = document.querySelectorAll('.content-view');
+            views.forEach(v => v.classList.remove('active'));
+
+            const menuItems = document.querySelectorAll('.sidebar .menu-item');
+            menuItems.forEach(m => m.classList.remove('active'));
+
+            const groupKep = document.getElementById('group-kepegawaian');
+            if(groupKep) groupKep.classList.remove('active');
+
+            const pageTitle = document.getElementById('page-title');
+            const breadcrumb = document.getElementById('breadcrumb-text');
+
+            if (tab === 'dashboard') {
+                document.getElementById('view-dashboard').classList.add('active');
+                document.getElementById('nav-dashboard').classList.add('active');
+                pageTitle.innerText = 'Dashboard Ketatausahaan';
+                breadcrumb.innerText = 'Sistem Informasi / Dashboard';
+            } else if (tab === 'kepegawaian') {
+                document.getElementById('view-kepegawaian').classList.add('active');
+                document.getElementById('nav-kepegawaian').classList.add('active');
+                if(groupKep) groupKep.classList.add('active');
+                pageTitle.innerText = 'Kepegawaian & Berkas';
+                breadcrumb.innerText = 'Sistem Informasi / Kepegawaian / Berkas Pegawai';
+            } else if (tab === 'persuratan') {
+                document.getElementById('view-persuratan').classList.add('active');
+                document.getElementById('nav-persuratan').classList.add('active');
+                
+                // Set URL Read-Only untuk Pegawai
+                const iframePersuratan = document.getElementById('persuratan-iframe');
+                if (iframePersuratan.src === "about:blank" || iframePersuratan.src !== SPREADSHEET_READONLY_URL) {
+                    iframePersuratan.src = SPREADSHEET_READONLY_URL;
+                }
+
+                pageTitle.innerText = 'Register Persuratan';
+                breadcrumb.innerText = 'Sistem Informasi / Persuratan';
+            } else {
+                const genericView = document.getElementById('view-generic');
+                const titles = {
+                    'kearsipan': 'Kearsipan Digital',
+                    'agenda': 'Agenda & Jadwal Kegiatan',
+                    'rekapitulasi': 'Rekapitulasi Laporan',
+                    'export': 'Export Data Administrasi'
+                };
+                
+                const titleText = titles[tab] || 'Modul Administrasi';
+                document.getElementById('generic-title').innerText = titleText;
+                document.getElementById('generic-desc').innerText = `Halaman ${titleText} Stasiun Klimatologi Jawa Barat.`;
+                
+                genericView.classList.add('active');
+                const targetNav = document.getElementById(`nav-${tab}`);
+                if (targetNav) targetNav.classList.add('active');
+
+                pageTitle.innerText = titleText;
+                breadcrumb.innerText = `Sistem Informasi / ${titleText}`;
+            }
+        }
+
+        // HANDLER MODAL ADMIN PERSURATAN
+        function openAdminModal() {
+            const modal = document.getElementById('modal-admin-persuratan');
+            document.getElementById('password-admin').value = '';
+            modal.classList.add('active');
+            setTimeout(() => document.getElementById('password-admin').focus(), 100);
+        }
+
+        function closeAdminModal() {
+            document.getElementById('modal-admin-persuratan').classList.remove('active');
+        }
+
+        function handleAdminLogin(event) {
+            event.preventDefault();
+            const pass = document.getElementById('password-admin').value;
+
+            if (pass === PASSWORD_ADMIN) {
+                closeAdminModal();
+                // Buka Google Sheets versi pengeditan penuh di tab baru
+                window.open(SPREADSHEET_EDIT_URL, '_blank');
+            } else {
+                alert('Kata sandi Admin salah! Akses pengeditan ditolak.');
+            }
+        }
+
+        // HANDLER MODAL KEPEGAWAIAN
+        function openModalBerkas(namaPegawai, emailPegawai, driveUrl) {
+            selectedPegawaiName = namaPegawai;
+            selectedPegawaiEmail = emailPegawai;
+            selectedPegawaiDrive = driveUrl || 'https://drive.google.com';
+
+            const modal = document.getElementById('modal-berkas');
+            const desc = document.getElementById('modal-desc');
+            const inputEmail = document.getElementById('email-bmkg');
+
+            desc.innerText = 'Masukkan email resmi BMKG yang terdaftar untuk pegawai: ' + namaPegawai;
+            inputEmail.value = '';
+            modal.classList.add('active');
+            setTimeout(() => inputEmail.focus(), 100);
+        }
+
+        function closeModalBerkas() {
+            document.getElementById('modal-berkas').classList.remove('active');
+        }
+
+        function handleLoginBerkas(event) {
+            event.preventDefault();
+            const email = document.getElementById('email-bmkg').value.trim().toLowerCase();
+            const emailTerdaftar = selectedPegawaiEmail.trim().toLowerCase();
+
+            if (!email.endsWith('@bmkg.go.id')) {
+                alert('Akses ditolak! Email harus menggunakan domain resmi @bmkg.go.id.');
+                return;
+            }
+
+            if (email !== emailTerdaftar) {
+                alert('Akses ditolak! Email yang dimasukkan tidak sesuai dengan data pegawai ' + selectedPegawaiName + '.');
+                return;
+            }
+
+            closeModalBerkas();
+
+            const fileContainer = document.getElementById('file-viewer-container');
+            const targetName = document.getElementById('target-pegawai-name');
+            const verifiedTag = document.getElementById('verified-email-tag');
+            const driveBtn = document.getElementById('pegawai-drive-url');
+            const driveFrame = document.getElementById('drive-embed-frame');
+
+            targetName.innerText = '📁 Berkas Arsip: ' + selectedPegawaiName;
+            verifiedTag.innerText = '✔ Email terverifikasi: ' + email;
+            driveBtn.href = selectedPegawaiDrive;
+
+            let resourceId = "";
+            const isFolder = selectedPegawaiDrive.includes('/folders/');
+            const isFile = selectedPegawaiDrive.includes('/file/d/');
+
+            if (isFolder) {
+                const match = selectedPegawaiDrive.match(/folders\/([a-zA-Z0-9_-]+)/);
+                if (match && match[1]) resourceId = match[1];
+                if (resourceId) {
+                    driveFrame.src = `https://drive.google.com/embeddedfolderview?id=${resourceId}#list`;
+                }
+            } else if (isFile) {
+                const match = selectedPegawaiDrive.match(/\/d\/([a-zA-Z0-9_-]+)/);
+                if (match && match[1]) resourceId = match[1];
+                if (resourceId) {
+                    driveFrame.src = `https://drive.google.com/file/d/${resourceId}/preview`;
+                }
+            } else {
+                driveFrame.src = selectedPegawaiDrive;
+            }
+
+            fileContainer.style.display = 'block';
+            fileContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function closeFileViewer() {
+            document.getElementById('file-viewer-container').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modalBerkas = document.getElementById('modal-berkas');
+            const modalAdmin = document.getElementById('modal-admin-persuratan');
+            if (event.target === modalBerkas) closeModalBerkas();
+            if (event.target === modalAdmin) closeAdminModal();
+        };
+    </script>
+</body>
+</html>
